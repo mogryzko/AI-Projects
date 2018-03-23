@@ -1,9 +1,6 @@
 # AI-Projects
-Programming assignments from my Artificial Intelligence class
+Programming assignments from Artificial Intelligence at Columbia University
 
-npuzzle.py:
-  A python program that finds and prints the optimal solution to any state space of an n-puzzle game. Impliments breadth first, depth first, greedy-best first, and A* search.
-  
 othello_ai.py:
   A python program that plays othello against a human or itself. Impliments minimax and alpha-beta pruning to select its next move.
   
