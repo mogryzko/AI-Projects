@@ -5,7 +5,9 @@ othello_ai.py:
   A python program that plays othello against a human or itself. Impliments minimax and alpha-beta pruning to select its next move.
   
 spam_filter.py:
-  A naive bayes classifier that learns from a training dataset and classifies messages as either spam or not spam.
+  A naive bayes classifier that learns from a training dataset and classifies messages as either spam or not spam. 
+  train.txt, test.txt, and dev.txt are used for this program. 
+  Run as follows: python spam_filter.py train.txt  dev.txt
   
 picture_classifier.py:
   An experiment with Keras and Tensorflow systems to build a neural network that classifies images as containing certain objects. Warning: because of the time and processing power required, it is best to run this on a jupyter notebook virtual environment.
