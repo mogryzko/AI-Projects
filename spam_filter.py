@@ -1,6 +1,9 @@
 '''
-Performance:
+Original performance:
 Precision:0.9508196721311475 Recall:0.8656716417910447 F-Score:0.9062499999999999 Accuracy:97.84560143626571
+
+Tuned performance:
+I was unable to get a better performance than my original by changing my c and k values
 '''
 
 
@@ -9,14 +12,12 @@ import sys
 import string
 import math
 
-c = 1 # smoothing factor
-
 
 def extract_words(text):
     translator = str.maketrans('', '', string.punctuation)
     extracted = text.translate(translator).lower()
     words = extracted.split()
-    return words # returns a list of words in the data sample.
+    return words # should return a list of words in the data sample.
 
 
 class NbClassifier(object):
@@ -46,32 +47,36 @@ class NbClassifier(object):
         myfile.close()
 
     def train(self, training_filename):
+        c = 1
         myfile = open(training_filename, 'r')
         data = myfile.readlines()
-        countTotals = {True : 0, False : 0} # total spam and ham counts, with spam = 1, ham = 0
+        countwy = {'spam': 0, 'ham': 0}
         self.label_prior = {'ham': 0, 'spam': 0}
-        wglcount = {} # Count of word given spam/ham label
+        wglcount = {}
         for line in data:
             words = extract_words(line)
-            spamOrHam = True
+            mess = ''
+            oppmess = ''
             if words[0] == 'ham':
                 self.label_prior['ham'] += 1
-                spamOrHam = False
+                mess = 'ham'
+                oppmess = 'spam'
             elif words[0] == 'spam':
                 self.label_prior['spam'] += 1
-                spamOrHam = True
-            for word in range(1, len(words)):
-                if word in self.attribute_types:
-                    countTotals[spamOrHam] += 1
-                    if (word, spamOrHam) in wglcount:
-                        wglcount[(word, spamOrHam)] += 1
+                mess = 'spam'
+                oppmess = 'ham'
+            for word in words:
+                if word != 'ham' and word != 'spam' and word in self.attribute_types:
+                    countwy[mess] += 1
+                    if (word,mess) in wglcount:
+                        wglcount[(word, mess)] += 1
                     else:
-                        wglcount[(word, spamOrHam)] = 1
-                    if (word, not(spamOrHam)) not in wglcount:
-                        wglcount[(word, not(spamOrHam))] = 0
+                        wglcount[(word, mess)] = 1
+                        if (word, oppmess) not in wglcount:
+                            wglcount[(word, oppmess)] = 0
         for word in self.attribute_types:
-            self.word_given_label[(word,'spam')] = (wglcount[(word,True)] + c)/(countTotals[True] + c*len(self.attribute_types))
-            self.word_given_label[(word,'ham')] = (wglcount[(word,False)] + c)/(countTotals[False] + c*len(self.attribute_types))
+            self.word_given_label[(word,'spam')] = (wglcount[(word,'spam')] + c)/(countwy['spam'] + c*len(self.attribute_types))
+            self.word_given_label[(word,'ham')] = (wglcount[(word,'ham')] + c)/(countwy['ham'] + c*len(self.attribute_types))
         myfile.close()
 
     def predict(self, text):
