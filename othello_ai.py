@@ -4,8 +4,7 @@
 """
 COMS W4701 Artificial Intelligence - Programming Homework 2
 
-An AI player for Othello. This is the template file that you need to
-complete and submit.
+An AI player for Othello.
 
 @author: Max Ogryzko mvo2102
 """
@@ -19,9 +18,6 @@ from othello_shared import find_lines, get_possible_moves, get_score, play_move
 
 start_time = time.time()
 board_dict = {}
-
-
-
 
 
 def mySort(board, actions, color):
@@ -45,7 +41,6 @@ def compute_utility(board, color):
         return (get_score(board)[0] - get_score(board)[1])
     else:
         return (get_score(board)[1] - get_score(board)[0])
-
     return 0
 
 
