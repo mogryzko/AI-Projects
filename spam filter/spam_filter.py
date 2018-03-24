@@ -1,9 +1,6 @@
 '''
-Original performance:
+Performance:
 Precision:0.9508196721311475 Recall:0.8656716417910447 F-Score:0.9062499999999999 Accuracy:97.84560143626571
-
-Tuned performance:
-I was unable to get a better performance than my original by changing my c and k values
 '''
 
 
