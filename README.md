@@ -9,3 +9,5 @@ spam_filter.py:
   
 picture_classifier.py:
   An experiment with Keras and Tensorflow systems to build a neural network that classifies images as containing certain objects. Warning: because of the time and processing power required, it is best to run this on a jupyter notebook virtual environment.
+  
+All projects made using python 3.6.3
