@@ -1,5 +1,3 @@
-
-
 import numpy as np
 import tensorflow as tf
 from keras.datasets import cifar10
@@ -47,7 +45,7 @@ def train_multilayer_nn(model, xtrain, ytrain_1hot):
 
 def build_convolution_nn():
     '''
-    [0.76899708118438723, 0.72959999999999999]
+    Performance: [0.76899708118438723, 0.72959999999999999]
     '''
 
     #create network
@@ -113,7 +111,7 @@ def get_binary_cifar10():
 
 def build_binary_classifier():
     '''
-    [0.15248513023853302, 0.94059999999999999]
+    Performance: [0.15248513023853302, 0.94059999999999999]
     '''
     #create network
     nn = Sequential()
