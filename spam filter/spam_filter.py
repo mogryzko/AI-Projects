@@ -1,6 +1,7 @@
 '''
 Performance:
-Precision:0.9508196721311475 Recall:0.8656716417910447 F-Score:0.9062499999999999 Accuracy:97.84560143626571
+Precision:0.9491525423728814 Recall:0.8888888888888888 F-Score:0.9180327868852458 Accuracy:98.20466786355476
+
 '''
 
 
@@ -10,19 +11,22 @@ import string
 import math
 
 
+c = 1 # smoothing constant
+
+# returns a list of words in the data sample.
 def extract_words(text):
     translator = str.maketrans('', '', string.punctuation)
     extracted = text.translate(translator).lower()
     words = extracted.split()
-    return words # should return a list of words in the data sample.
+    return words
 
 
 class NbClassifier(object):
 
     def __init__(self, training_filename, stopword_file = None):
         self.attribute_types = set()
-        self.label_prior = {}    
-        self.word_given_label = {}
+        self.label_prior = {} # total number of words in all messages marked as spam or ham
+        self.word_given_label = {} # final probability of word given label
         self.stopwords = ['a','an','and','are','as','at','be','been','by','for','from','has','have','in','is','it',
                           'its','of','on','that','the','to','was','were','will','with']
 
@@ -43,44 +47,37 @@ class NbClassifier(object):
                 self.attribute_types.add(word)
         myfile.close()
 
+    # True means spam message, False means ham message
     def train(self, training_filename):
-        c = 1
         myfile = open(training_filename, 'r')
-        data = myfile.readlines()
-        countwy = {'spam': 0, 'ham': 0}
-        self.label_prior = {'ham': 0, 'spam': 0}
-        wglcount = {}
-        for line in data:
+        countwy = {True: 0, False: 0} # number of words in ham and spam messages
+        self.label_prior = {True: 0, False: 0}
+        wglcount = {} # number of times word is seen in spam/ham message
+        for line in myfile:
             words = extract_words(line)
-            mess = ''
-            oppmess = ''
+            tf = False
             if words[0] == 'ham':
-                self.label_prior['ham'] += 1
-                mess = 'ham'
-                oppmess = 'spam'
+                self.label_prior[False] += 1
+                tf = False
             elif words[0] == 'spam':
-                self.label_prior['spam'] += 1
-                mess = 'spam'
-                oppmess = 'ham'
-            for word in words:
-                if word != 'ham' and word != 'spam' and word in self.attribute_types:
-                    countwy[mess] += 1
-                    if (word,mess) in wglcount:
-                        wglcount[(word, mess)] += 1
-                    else:
-                        wglcount[(word, mess)] = 1
-                        if (word, oppmess) not in wglcount:
-                            wglcount[(word, oppmess)] = 0
+                self.label_prior[True] += 1
+                tf = True
+            for i in range(1, len(words)):
+                countwy[tf] += 1
+                wglcount.setdefault((words[i],tf), 0)
+                wglcount[(words[i], tf)] += 1
+                if (words[i], not tf) not in wglcount:
+                    wglcount[(words[i], not tf)] = 0
         for word in self.attribute_types:
-            self.word_given_label[(word,'spam')] = (wglcount[(word,'spam')] + c)/(countwy['spam'] + c*len(self.attribute_types))
-            self.word_given_label[(word,'ham')] = (wglcount[(word,'ham')] + c)/(countwy['ham'] + c*len(self.attribute_types))
+            self.word_given_label[(word,'spam')] = (wglcount[(word,True)] + c)/(countwy[True] + c*len(self.attribute_types))
+            self.word_given_label[(word,'ham')] = (wglcount[(word,False)] + c)/(countwy[False] + c*len(self.attribute_types))
         myfile.close()
 
     def predict(self, text):
         words = extract_words(text)
         words.pop(0)
-        numspam = self.label_prior['spam']
-        numham = self.label_prior['ham']
+        numspam = self.label_prior[True]
+        numham = self.label_prior[False]
         probspam = math.log10(numspam)
         probham = math.log10(numham)
         for word in words:
