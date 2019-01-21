@@ -13,7 +13,6 @@ import random
 import sys
 import time
 
-# You can use the functions in othello_shared to write your AI
 from othello_shared import find_lines, get_possible_moves, get_score, play_move
 
 start_time = time.time()
@@ -41,6 +40,7 @@ def compute_utility(board, color):
         return (get_score(board)[0] - get_score(board)[1])
     else:
         return (get_score(board)[1] - get_score(board)[0])
+
     return 0
 
 
